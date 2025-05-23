@@ -1,0 +1,5 @@
+Flask
+sentence-transformers
+pdfplumber
+python-docx
+PyMuPDF

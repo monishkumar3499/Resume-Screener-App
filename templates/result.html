@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QualifAI</title>
+    <link rel="icon" type="image/png" href="./logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles and Variables */
+        :root {
+          --primary-color: #4361ee;
+          --primary-light: #4895ef;
+          --primary-dark: #3f37c9;
+          --secondary-color: #f72585;
+          --accent-color: #7209b7;
+          --success-color: #4cc9f0;
+          --warning-color: #f8961e;
+          --danger-color: #f94144;
+          --light-color: #f8f9fa;
+          --dark-color: #212529;
+          --gray-color: #6c757d;
+          --border-radius: 12px;
+          --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+
+          /* Score colors */
+          --high-score-color: #4cc9f0;
+          --medium-score-color: #f8961e;
+          --low-score-color: #f94144;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(-30px);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        /* Global Styles */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          min-height: 100vh;
+          color: var(--dark-color);
+          line-height: 1.6;
+        }
+
+        .page-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+
+        .container {
+          background: white;
+          border-radius: var(--border-radius);
+          box-shadow: var(--box-shadow);
+          width: 100%;
+          max-width: 800px;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .animate-in {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Header Styles */
+        .header {
+          background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+          color: white;
+          padding: 30px;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .header::before {
+          content: "";
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+          animation: pulse 15s infinite;
+        }
+
+        .logo {
+          font-size: 3rem;
+          margin-bottom: 15px;
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .header h1 {
+          font-size: 2.5rem;
+          margin-bottom: 10px;
+          font-weight: 700;
+        }
+
+        .tagline {
+          font-size: 1.1rem;
+          opacity: 0.9;
+        }
+
+        /* Form Styles */
+        .form-card {
+          padding: 30px;
+          background: white;
+        }
+
+        .form-section {
+          margin-bottom: 25px;
+        }
+
+        .form-section label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 600;
+          color: var(--dark-color);
+        }
+
+        .form-section label i {
+          margin-right: 8px;
+          color: var(--primary-color);
+        }
+
+        input[type="text"],
+        textarea {
+          width: 100%;
+          padding: 15px;
+          border: 2px solid #e9ecef;
+          border-radius: var(--border-radius);
+          font-size: 1rem;
+          transition: var(--transition);
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+          border-color: var(--primary-light);
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 120px;
+        }
+
+        /* File Upload Styling */
+        .file-upload {
+          position: relative;
+          margin-bottom: 15px;
+        }
+
+        .file-upload input[type="file"] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          cursor: pointer;
+          z-index: 2;
+        }
+
+        .file-upload-label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+          background: #f8f9fa;
+          border: 2px dashed #ced4da;
+          border-radius: var(--border-radius);
+          color: var(--gray-color);
+          font-weight: 500;
+          transition: var(--transition);
+        }
+
+        .file-upload-label i {
+          font-size: 1.5rem;
+          margin-right: 10px;
+          color: var(--primary-color);
+        }
+
+        .file-upload:hover .file-upload-label {
+          background: #e9ecef;
+          border-color: var(--primary-light);
+        }
+
+        .file-name {
+          margin-top: 8px;
+          font-size: 0.9rem;
+          color: var(--gray-color);
+          padding-left: 10px;
+          height: 20px;
+        }
+
+        .has-file .file-upload-label {
+          background: #e8f4ff;
+          border-color: var(--primary-light);
+        }
+
+        /* Button Styles */
+        .submit-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          padding: 15px;
+          background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+          color: white;
+          border: none;
+          border-radius: var(--border-radius);
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition);
+          box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .submit-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .submit-btn:active {
+          transform: translateY(0);
+        }
+
+        .submit-btn i {
+          margin-left: 10px;
+          transition: var(--transition);
+        }
+
+        .submit-btn:hover i {
+          transform: translateX(5px);
+        }
+
+        /* Footer Styles */
+        .footer {
+          padding: 20px;
+          text-align: center;
+          color: var(--gray-color);
+          font-size: 0.9rem;
+          border-top: 1px solid #e9ecef;
+        }
+
+        /* Result Page Styles */
+        .result-container {
+          background: white;
+        }
+
+        .result-card {
+          padding: 30px;
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .job-title {
+          display: flex;
+          align-items: center;
+          margin-bottom: 25px;
+          animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .job-title i {
+          font-size: 1.5rem;
+          margin-right: 15px;
+          color: var(--primary-color);
+        }
+
+        .job-title h2 {
+          font-size: 1.8rem;
+          color: var(--dark-color);
+        }
+
+        .score-container {
+          display: flex;
+          justify-content: center;
+          margin: 30px 0;
+        }
+
+        .score-circle {
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          background: #f1f3f5;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          transition: background 1.5s ease;
+          --score-color: var(--primary-color);
+          --score-bg-color: #f1f3f5;
+        }
+
+        .score-circle::before {
+          content: "";
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          border-radius: 50%;
+          background: white;
+          z-index: 1;
+        }
+
+        .score-number {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--dark-color);
+          position: relative;
+          z-index: 2;
+        }
+
+        .score-label {
+          font-size: 1.1rem;
+          color: var(--gray-color);
+          position: relative;
+          z-index: 2;
+        }
+
+        .high-score {
+          --score-color: var(--high-score-color);
+        }
+
+        .medium-score {
+          --score-color: var(--medium-score-color);
+        }
+
+        .low-score {
+          --score-color: var(--danger-color);
+        }
+
+        .analysis-section {
+          margin-top: 40px;
+        }
+
+        .analysis-section h3 {
+          display: flex;
+          align-items: center;
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+          color: var(--dark-color);
+        }
+
+        .analysis-section h3 i {
+          margin-right: 10px;
+          color: var(--primary-color);
+        }
+
+        .analysis-card {
+          background: #f8f9fa;
+          border-radius: var(--border-radius);
+          padding: 20px;
+          margin-bottom: 20px;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+          transition: var(--transition);
+          animation: fadeIn 0.8s ease-out forwards;
+          animation-delay: 0.3s;
+          opacity: 0;
+        }
+
+        .analysis-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-card h4 {
+          color: var(--primary-dark);
+          margin-bottom: 10px;
+          font-size: 1.2rem;
+        }
+
+        .analysis-card.summary {
+          border-left: 4px solid var(--primary-color);
+        }
+
+        .analysis-card.tips {
+          border-left: 4px solid var(--secondary-color);
+          animation-delay: 0.5s;
+        }
+
+        .back-btn {
+          display: inline-flex;
+          align-items: center;
+          padding: 12px 25px;
+          background: var(--light-color);
+          color: var(--dark-color);
+          text-decoration: none;
+          border-radius: var(--border-radius);
+          font-weight: 600;
+          transition: var(--transition);
+          margin-top: 20px;
+        }
+
+        .back-btn:hover {
+          background: var(--primary-light);
+          color: white;
+        }
+
+        .back-btn i {
+          margin-right: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+          .header {
+            padding: 20px;
+          }
+
+          .header h1 {
+            font-size: 2rem;
+          }
+
+          .form-card,
+          .result-card {
+            padding: 20px;
+          }
+
+          .score-circle {
+            width: 150px;
+            height: 150px;
+          }
+
+          .score-number {
+            font-size: 1.5rem;
+          }
+
+          .job-title h2 {
+            font-size: 1.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .header {
+            padding: 15px;
+          }
+
+          .header h1 {
+            font-size: 1.8rem;
+          }
+
+          .logo {
+            font-size: 2.5rem;
+          }
+
+          .score-circle {
+            width: 120px;
+            height: 120px;
+          }
+
+          .score-number {
+            font-size: 1rem;
+          }
+
+          .analysis-card {
+            padding: 15px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="container result-container animate-in">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h1>Resume Analysis</h1>
+            </div>
+            
+            <div class="result-card">
+                <div class="job-title">
+                    <i class="fas fa-briefcase"></i>
+                    <h2>{{ job_title }}</h2>
+                </div>
+                
+                <div class="score-container">
+                    <div class="score-circle" data-score="{{ score }}">
+                        <div class="score-number">{{ score }}%</div>
+                        <div class="score-label">Match</div>
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <h3><i class="fas fa-search"></i> Analysis</h3>
+                    <div class="analysis-card summary">
+                        <h4>Summary</h4>
+                        <p>{{ details.summary }}</p>
+                    </div>
+                    
+                    <div class="analysis-card tips">
+                        <h4>Improvement Tips</h4>
+                        <p>{{ details.tips }}</p>
+                    </div>
+                </div>
+                
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Try Another Resume</span>
+                </a>
+            </div>
+            
+            <div class="footer">
+                <p> &copy; 2025 QualifAI. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate the score circle on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const scoreCircle = document.querySelector('.score-circle');
+            const score = parseInt(scoreCircle.getAttribute('data-score'));
+            
+            // Set color based on score
+            if (score >= 80) {
+                scoreCircle.classList.add('high-score');
+            } else if (score >= 60) {
+                scoreCircle.classList.add('medium-score');
+            } else {
+                scoreCircle.classList.add('low-score');
+            }
+            
+            // Animate the circle filling
+            setTimeout(() => {
+                scoreCircle.style.background = `conic-gradient(
+                    var(--score-color) ${score * 3.6}deg, 
+                    var(--score-bg-color) ${score * 3.6}deg
+                )`;
+            }, 300);
+        });
+    </script>
+</body>
+</html>
